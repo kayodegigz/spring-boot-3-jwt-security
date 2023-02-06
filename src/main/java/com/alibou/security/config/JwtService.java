@@ -19,15 +19,21 @@ public class JwtService {
   private static final String SECRET_KEY = "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
 
   public String extractUsername(String token) {
+
+    // the subject is the username or email of the user
     return extractClaim(token, Claims::getSubject);
   }
 
   public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+    // this will be used to extract any claim we want
     final Claims claims = extractAllClaims(token);
     return claimsResolver.apply(claims);
   }
 
+
+  // generate token without passing claims
   public String generateToken(UserDetails userDetails) {
+
     return generateToken(new HashMap<>(), userDetails);
   }
 
@@ -51,13 +57,17 @@ public class JwtService {
   }
 
   private boolean isTokenExpired(String token) {
+
     return extractExpiration(token).before(new Date());
   }
 
   private Date extractExpiration(String token) {
+
     return extractClaim(token, Claims::getExpiration);
   }
 
+
+  // to get the claims from the jwt
   private Claims extractAllClaims(String token) {
     return Jwts
         .parserBuilder()

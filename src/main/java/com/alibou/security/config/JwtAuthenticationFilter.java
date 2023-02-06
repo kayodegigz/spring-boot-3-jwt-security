@@ -29,15 +29,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       @NonNull HttpServletResponse response,
       @NonNull FilterChain filterChain
   ) throws ServletException, IOException {
+
+    // extracting the header info
     final String authHeader = request.getHeader("Authorization");
+
+    // declaring te jwt
     final String jwt;
+
+    // the user email will be stored here
     final String userEmail;
-    if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
+
+    // checking if it is a valid auth header
+    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
       filterChain.doFilter(request, response);
       return;
     }
+
+    // extracting the token from the header position 7 cos we're counting from after "bearer "
     jwt = authHeader.substring(7);
+
+
+    // extracting the username from the jwt
     userEmail = jwtService.extractUsername(jwt);
+
+
+
+    // SecurityContextHolder.getContext().getAuthentication() == null is to check if the user is already authenticated
     if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
       UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
       if (jwtService.isTokenValid(jwt, userDetails)) {
