@@ -21,7 +21,11 @@ public class JwtService {
   public String extractUsername(String token) {
 
     // the subject is the username or email of the user
+
     return extractClaim(token, Claims::getSubject);
+    // but Claims.getsubject() doesn't take any params, so why?
+    // I get now, it ahould be claims.Claims.getSubject(), no need for d Claims tho since claims
+    // is already an object of Claims, so it is actually claims.getSubject()
   }
 
   public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {

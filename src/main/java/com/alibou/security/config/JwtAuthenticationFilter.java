@@ -54,7 +54,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
 
-    // SecurityContextHolder.getContext().getAuthentication() == null is to check if the user is already authenticated
+    // SecurityContextHolder.getContext().getAuthentication() == null
+    // ...is to check if the context if d user is already authenticated
     if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
       UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
       if (jwtService.isTokenValid(jwt, userDetails)) {
@@ -63,6 +64,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             null,
             userDetails.getAuthorities()
         );
+
+        // to give the token more details
         authToken.setDetails(
             new WebAuthenticationDetailsSource().buildDetails(request)
         );
